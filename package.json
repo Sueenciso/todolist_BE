@@ -1,0 +1,29 @@
+{
+  "name": "04-todolistbe",
+  "version": "1.0.0",
+  "description": "Api ToDolist",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sueenciso/todolist_BE.git"
+  },
+  "keywords": [
+    "todolist",
+    "node",
+    "javascript"
+  ],
+  "author": "innovacarb",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Sueenciso/todolist_BE/issues"
+  },
+  "homepage": "https://github.com/Sueenciso/todolist_BE#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemon": "^2.0.20"
+  }
+}
