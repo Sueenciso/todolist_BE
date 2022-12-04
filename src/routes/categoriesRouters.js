@@ -66,7 +66,7 @@ routes.put("/:id", async (req, res) => {
 
 routes.delete("/:id", async (req, res) => {
   const { id } = req.params;
-  const { name } = req.body;
+  const {name}=req.body;
 
   const fileContent = await (await fs.readFile("./categories.json")).toString();
   const categories = JSON.parse(fileContent);
@@ -74,12 +74,12 @@ routes.delete("/:id", async (req, res) => {
   const category = categories.find((item) => item.id == id);
   const newCategories = categories.filter((item) => id != item.id);
 
-  category.name = name;
-  newCategories.push(category);
+  delete category.name;
+  delete category.id;
 
-  await fs.writeFile("./categories.json", JSON.stringify(newCategories));
-
-  res.json({ ok: true, payload: category });
+  await fs.writeFile("./categories.json",JSON.stringify(newCategories));
+  
+  res.json({ Message: "Elemento eliminado correctamente", newCategories});
 });
 
 module.exports = routes;
