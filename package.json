@@ -1,29 +1,29 @@
 {
-  "name": "04-todolistbe",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2"
+  },
+  "name": "03-expss",
   "version": "1.0.0",
-  "description": "Api ToDolist",
+  "description": "Esta es mi primer aplicacion de Backend con Node",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Sueenciso/todolist_BE.git"
+    "url": "git+https://github.com/Sueenciso/api_Js.git"
   },
   "keywords": [
-    "todolist",
+    "api",
     "node",
-    "javascript"
+    "javascript",
+    "rest"
   ],
-  "author": "innovacarb",
+  "author": "@Sueenciso",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Sueenciso/todolist_BE/issues"
+    "url": "https://github.com/Sueenciso/api_Js/issues"
   },
-  "homepage": "https://github.com/Sueenciso/todolist_BE#readme",
-  "dependencies": {
-    "express": "^4.18.2",
-    "nodemon": "^2.0.20"
-  }
+  "homepage": "https://github.com/Sueenciso/api_Js#readme"
 }
