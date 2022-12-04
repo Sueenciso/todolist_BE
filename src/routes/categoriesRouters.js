@@ -2,6 +2,7 @@ const fs=require("fs/promises");
 const { Router } = require("express");
 const routes = Router();
 const { app } = require("../lib/config");
+//const { fstat } = require("fs");
 
 const categories = [
   { id: 1, nameCategorie: "confiteria"},
@@ -10,8 +11,10 @@ const categories = [
 ];
 
 routes.get("/", async (req, res) => {
-  
-  res.json(categories);
+  const categories = await (await fs.readFile("./categories.json"))
+  const data=JSON.parse(categories.toString());
+
+  res.json(data);
 });
 
 routes.get("/:categoriesid", (req, res) => {
@@ -30,13 +33,22 @@ routes.post("/", async (req,res)=>{
    console.log("request body: ",req.body);
 
     const id = Math.ceil(Math.random()*100);
-    const {nameCategorie}=req.body;
+    const {name}=req.body;
 
-    const appendRes = await fs.appendFile(
-      "./categories.json", JSON.stringify({id, nameCategorie})
-      );
+    const fileContent= await (await fs.readFile("./categories.json")).toString(); 
+    
+    const dataCategories=JSON.parse(fileContent);
+    
+    dataCategories.push({id,name});
 
-  res.json({message: "Categorie created successfully",payload: appendRes})
+    const appendRes = await fs.writeFile(
+       "./categories.json", 
+       JSON.stringify(dataCategories)); 
+
+  res.json({
+    message: "Categorie created successfully",
+    payload: appendRes,
+  });
   
 });
 
