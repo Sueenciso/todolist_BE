@@ -2,15 +2,14 @@ const fs = require("fs/promises");
 const { Router } = require("express");
 const routes = Router();
 const { app } = require("../lib/config");
-const categoryUseCases = require("../usescases/category");
-//const { fstat } = require("fs");
+const taskUseCases = require("../usescases/task");
 
 routes.get("/", async (req, res) => {
   try {
-    const categories = await categoryUseCases.getAll();
-    res.json({ ok: true, payload: categories });
+    const task = await taskUseCases.getAll();
+    res.json({ ok: true, payload: task });
   } catch (error) {
-    res.status(400).json({ ok: false, payload: categories });
+    res.status(400).json({ ok: false, payload: task });
   }
 });
 
@@ -18,7 +17,7 @@ routes.get("/:id", async (req, res) => {
   const { id } = req.params;
 
   try {
-    const { name, products } = await categoryUseCases.getById(id);
+    const { name, products } = await taskUseCases.getById(id);
     res.json({ ok: true, payload: { name, products } });
   } catch (error) {
     res.status(400).json({ ok: false, message: error });
@@ -28,7 +27,7 @@ routes.get("/:id", async (req, res) => {
 routes.post("/", async (req, res) => {
   const { name } = req.body;
   try {
-    const payload = await categoryUseCases.create(name);
+    const payload = await taskUseCases.create(name);
     res.json({
       message: "Categorie created successfully",
       payload,
@@ -45,7 +44,7 @@ routes.put("/:id", async (req, res) => {
 
   try {
     const data = { name, products };
-    const category = await categoryUseCases.update(id, data);
+    const category = await taskUseCases.update(id, data);
     res.json({ ok: true, payload: category });
   } catch (error) {
     const {message}=error;
@@ -57,9 +56,9 @@ routes.delete("/:id", async (req, res) => {
   
   try{
     const { id } = req.params;
-    const categories= await categoryUseCases.del(id)
+    const task= await taskUseCases.del(id)
 
-    res.json({ok:true,payload: categories})
+    res.json({ok:true,payload: task})
   }catch(error){
     const {message}=error
     res.status(400).json({ok:false,message})
