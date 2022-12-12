@@ -3,8 +3,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const schema = new mongoose.Schema({
-  name: { type: String, required: true, unique: true, trim: true }, //propiedad 1 con opciones requeridas y unicas entre todos los registros
-  products: { type: [mongoose.ObjectId] }, //propiedad 2
+  name: { type: String, required: true, trim: true }, //propiedad 1 con opciones requeridas y unicas entre todos los registros
 });
 
 const model = mongoose.model("Task", schema); //Category es el recurso, con 2 propiedades

@@ -4,7 +4,10 @@ const getAll = async () => {
   return await Task.find({}).exec(); //find recibe como argumento un objeto
 };
 
-const getById = async (id) => await Task.findById(id).exec();
+const getById = async (id) => 
+{
+  return await Task.findById(id).exec();
+}
 
 const create = async (name) => {
   const task = new Task({ name });

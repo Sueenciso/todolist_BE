@@ -1,42 +1,55 @@
 const { Router } = require("express");
+const { getAll, create, authenticate, getById } = require("../usescases/user");
+const { authHandler } = require("../middlewares/authHandler");
+
 const routes = Router();
 
-const users = [
-  { id: 1, username: "admin", firstName: "Admin", lastName: "System" },
-  { id: 2, username: "staff", firstName: "Staff", lastName: "" },
-  { id: 3, username: "customer", firstName: "John", lastName: "Doe" },
-];
+routes.get("/", authHandler, async (req, res) => {
+  const id = req.params.token.sub;
 
-routes.get("/", (req, res) => {
-  res.json(users);
+  const { email, firstName } = await getById(id);
+
+  res.json({ ok: true, payload});
 });
 
-routes.get("/:userid", (req, res) => {
-  const data = users.find((user) => {
-    return user.id == req.params.userid;
-  });
+routes.post("/", async (req, res) => {
+  const { email, password, firstName } = req.body;
 
-  if (data) {
-    res.json(data);
-  } else {
-    res.status(404).json({ message: "User not found" });
+  try {
+    const payload = await create({ email, password, firstName });
+    res.json({ ok: true, payload });
+  } catch (error) {
+    const { message } = error;
+    res.status(400).json({ ok: false, message });
   }
 });
 
-routes.post("/",(req,res)=>{
-  const data = req.body;
+routes.post("/auth", async (req, res) => {
+  const { email, password } = req.body;
 
-  const {username,email,password}=data;
-  const newUser={id: 43,username,password,email};
-  if(!data){
-    res.status(400).json({message: "user data is required"});
-  }else{
-    res.status(201).json({
-      ok:true,
-      message: "usuario creado",
-      payload: newUser
-    });
+  try {
+    const payload = await authenticate(email, password);
+    res.status(202).json({ ok: true, payload });
+  } catch (error) {
+    const { message } = error;
+    res.status(401).json({ ok: false, message });
   }
+});
+
+routes.put("/", (req, res) => {
+  res.status(405).json({ message: "Method not allowed" });
+});
+
+routes.put("/:id", (req, res) => {
+  // Lógica para editar el usuario con el id X
+
+  res.json({ message: `Usuario con el id ${req.params.id} modificado` });
+});
+
+routes.delete("/:id", (req, res) => {
+  // Logica para eliminar el usuario con el id X
+
+  res.json({ message: `Usuario con el id ${req.params.id} eliminado` });
 });
 
 module.exports = routes;

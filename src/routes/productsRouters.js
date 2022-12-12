@@ -1,41 +1,54 @@
 const { Router } = require("express");
 const routes = Router();
+const { getAll, create, getById, update } = require("../usescases/products");
+const { authHandler } = require("../middlewares/authHandler");
 
-const product = [
-  { id: 1, producttype: "lentes Oscuros", precio: 120 },
-  { id: 2, producttype: "Mochila", precio: 450 },
-  { id: 3, producttype: "Garrafón", precio: 48},
-];
-
-routes.get("/", (req, res) => {
-  res.json(product);
-});
-
-routes.get("/:productsid", (req, res) => {
-  const data = product.find((prod) => {
-    return prod.id == req.params.productsid;
-  });
-
-  if (data) {
-    res.json(data);
-  } else {
-    res.status(404).json({ message: "product not found" });
+routes.get("/", async (req, res) => {
+  try {
+    const payload = await getAll();
+    res.json({ ok: true, payload });
+  } catch (error) {
+    const { message } = error;
+    res.status(400).json({ ok: false, message });
   }
 });
 
-routes.post("/",(req,res)=>{
-  const data = req.body;
+routes.get("/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const payload = await getById(id);
+    res.json({ ok: true, payload });
+  } catch (error) {
+    const { message } = error;
+    res.status(400).json({ ok: false, message });
+  }
+});
 
-  const {producttype,precio}=data;
-  const newProduct={id: 43,producttype,precio};
-  if(!data){
-    res.status(400).json({message: "user data is required"});
-  }else{
-    res.status(201).json({
-      ok:true,
-      message: "producto dado de alta correctamente",
-      payload: newProduct
-    });
+routes.post("/", async (req, res) => {
+  const { sku, name, price } = req.body;
+
+  try {
+    const product = await create({ sku, name, price });
+    const payload = {
+      sku: product.sku,
+      name: product.name,
+      price: product.price,
+    };
+    res.status(201).json({ ok: true, payload });
+  } catch (error) {
+    const { message } = error;
+    res.status(400).json({ ok: false, message });
+  }
+});
+
+routes.put("/:id", async (req, res) => {
+  const { sku, name, price, stockQty } = req.body;
+  try {
+    const payload = await update({ sku, name, price, stockQty });
+    res.json({ ok: true, payload });
+  } catch (error) {
+    const { message } = error;
+    res.status(400).json({ ok: false, message });
   }
 });
 

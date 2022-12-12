@@ -1,69 +1,77 @@
-const fs = require("fs/promises");
-const { Router } = require("express");
-const routes = Router();
-const { app } = require("../lib/config");
-const categoryUseCases = require("../usescases/category");
-//const { fstat } = require("fs");
+const router = require("express").Router();
+const {
+  getAll,
+  getById,
+  create,
+  update,
+  del,
+} = require("../usescases/category");
 
-routes.get("/", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    const categories = await categoryUseCases.getAll();
+    const categories = await getAll();
     res.json({ ok: true, payload: categories });
-  } catch (error) {
-    res.status(400).json({ ok: false, payload: categories });
-  }
-});
-
-routes.get("/:id", async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const { name, products } = await categoryUseCases.getById(id);
-    res.json({ ok: true, payload: { name, products } });
   } catch (error) {
     res.status(400).json({ ok: false, message: error });
   }
 });
 
-routes.post("/", async (req, res) => {
-  const { name } = req.body;
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const payload = await categoryUseCases.create(name);
+    const { name, products } = await getById(id);
     res.json({
-      message: "Categorie created successfully",
-      payload,
+      ok: true,
+      payload: { name, products, numberOfProducts: products.length },
     });
   } catch (error) {
-    const {message}=error;
-    res.status(400).json({ok: false,message: error,});
+    res.status(400).json({ ok: false, message: error });
   }
 });
 
-routes.put("/:id", async (req, res) => {
+router.post("/", async (req, res) => {
+  const { name } = req.body;
+
+  try {
+    const payload = await create(name);
+    res.json({
+      ok: true,
+      message: "Category created successfully",
+      payload,
+    });
+  } catch (error) {
+    res.status(400).json({
+      ok: false,
+      message: error,
+    });
+  }
+});
+
+router.put("/:id", async (req, res) => {
   const { id } = req.params;
   const { name, products } = req.body;
 
   try {
     const data = { name, products };
-    const category = await categoryUseCases.update(id, data);
+    const category = await update(id, data);
     res.json({ ok: true, payload: category });
   } catch (error) {
-    const {message}=error;
-    res.status(400).json({ ok: false, message: error });
+    const { message } = error;
+    res.status(400).json({ ok: false, message });
   }
 });
 
-routes.delete("/:id", async (req, res) => {
-  
-  try{
+router.delete("/:id", async (req, res) => {
+  try {
     const { id } = req.params;
-    const categories= await categoryUseCases.del(id)
+    const { name, products } = await del(id);
 
-    res.json({ok:true,payload: categories})
-  }catch(error){
-    const {message}=error
-    res.status(400).json({ok:false,message})
+    res.json({ ok: true, payload: { name, products } });
+  } catch (error) {
+    const { message } = error;
+    res.status(400).json({ ok: false, message });
   }
 });
 
-module.exports = routes;
+module.exports = router;
